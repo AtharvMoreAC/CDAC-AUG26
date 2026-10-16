@@ -1,0 +1,338 @@
+Microsoft Windows [Version 10.0.26200.9711]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Atharv More>mysql -u root -p
+Enter password: *********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 16
+Server version: 8.0.46 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> Create database DCLdb;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use DCLdb;
+Database changed
+mysql> Create table Department (Deptid Int primary key, DeptName varchar(50) Not Null, city varchar(50));
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> Create Table Employee (Empid int primary key, EmpName varchar(50) Not Null, salary decimal(10,2),DeptId Int,Joiningdate Date, Foreign key (deptid) References department(Deptid));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> Insert Into Department Values
+    -> (10,'Sales','Mumbai'),(20,'IT','Pune'),(30,'HR','Nashik'),(40,'Finance','Mumbai');
+Query OK, 4 rows affected (0.03 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> Insert Into Employee values
+    -> (101,'Amit',60000,10,'2024-01-15'),
+    -> (102, 'Priya', 75000, 20, '2023-06-10'),
+    -> (103, 'Rahul', 45000, 10, '2024-03-20'),
+    -> (104, 'Neha', 90000, 30, '2022-11-05'),
+    -> (105, 'Sneha', 55000, 20, '2025-02-12'),
+    -> (5, 'Karan', 40000, 40, '2025-05-01');
+Query OK, 6 rows affected (0.14 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+mysql> Select * from Employee;
++-------+---------+----------+--------+-------------+
+| Empid | EmpName | salary   | DeptId | Joiningdate |
++-------+---------+----------+--------+-------------+
+|     5 | Karan   | 40000.00 |     40 | 2025-05-01  |
+|   101 | Amit    | 60000.00 |     10 | 2024-01-15  |
+|   102 | Priya   | 75000.00 |     20 | 2023-06-10  |
+|   103 | Rahul   | 45000.00 |     10 | 2024-03-20  |
+|   104 | Neha    | 90000.00 |     30 | 2022-11-05  |
+|   105 | Sneha   | 55000.00 |     20 | 2025-02-12  |
++-------+---------+----------+--------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> Select * from department;
++--------+----------+--------+
+| Deptid | DeptName | city   |
++--------+----------+--------+
+|     10 | Sales    | Mumbai |
+|     20 | IT       | Pune   |
+|     30 | HR       | Nashik |
+|     40 | Finance  | Mumbai |
++--------+----------+--------+
+4 rows in set (0.00 sec)
+
+mysql> Alter table Employee
+    -> Add Email varchar(100);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> Insert Into Employee (EmpID, EmpName, Salary, DeptID, JoiningDate, Email) values
+    -> (106, 'Raj', 52000, 10, '2024-07-01', 'raj@example.com'),
+    -> (107, 'Pooja', 68000, 20, '2023-09-15', 'pooja@example.com'),
+    -> (108, 'Vijay', 48000, 30, '2025-01-10', 'vijay@example.com'),
+    -> (109, 'Anita', 82000, 40, '2022-08-20', 'anita@example.com'),
+    -> (110, 'Rohan', 57000, 10, '2024-12-05', 'rohan@example.com');
+Query OK, 5 rows affected (0.23 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> Update Employee SET Salary = 50000
+    -> Where EmpId = 5;
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> Select * from Employee where Empid = 5;
++-------+---------+----------+--------+-------------+-------+
+| Empid | EmpName | salary   | DeptId | Joiningdate | Email |
++-------+---------+----------+--------+-------------+-------+
+|     5 | Karan   | 50000.00 |     40 | 2025-05-01  | NULL  |
++-------+---------+----------+--------+-------------+-------+
+1 row in set (0.00 sec)
+
+mysql> Create User 'readonly_user'@'localhost'
+    -> Identified By 'Read123';
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> GRANT Select On DCLdb.Employee
+    -> TO 'readonly_user'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Create User 'temp_user'@'localhost'
+    -> Identified By 'Temp123';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Grant INSERT on DCLdb.Employee
+    -> TO 'temp_user'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Start Transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Insert Into Employee(Empid, Empname, salary, Deptid, JoiningDate) Values
+    -> (111,'Sahil',62000,10,'2025-06-01');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Update Employee Set Salary = 70000
+    -> Where Empid = 101;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> commit;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Select * From Employee where Empid = 101;
++-------+---------+----------+--------+-------------+-------+
+| Empid | EmpName | salary   | DeptId | Joiningdate | Email |
++-------+---------+----------+--------+-------------+-------+
+|   101 | Amit    | 70000.00 |     10 | 2024-01-15  | NULL  |
++-------+---------+----------+--------+-------------+-------+
+1 row in set (0.00 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> savepoint before_dept_update;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Update Employee
+    -> Set DeptId = 30
+    -> Where Empid = 101;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> Rollback to savepoint before_dept_update;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Select * from Employee;
++-------+---------+----------+--------+-------------+-------------------+
+| Empid | EmpName | salary   | DeptId | Joiningdate | Email             |
++-------+---------+----------+--------+-------------+-------------------+
+|     5 | Karan   | 50000.00 |     40 | 2025-05-01  | NULL              |
+|   101 | Amit    | 70000.00 |     10 | 2024-01-15  | NULL              |
+|   102 | Priya   | 75000.00 |     20 | 2023-06-10  | NULL              |
+|   103 | Rahul   | 45000.00 |     10 | 2024-03-20  | NULL              |
+|   104 | Neha    | 90000.00 |     30 | 2022-11-05  | NULL              |
+|   105 | Sneha   | 55000.00 |     20 | 2025-02-12  | NULL              |
+|   106 | Raj     | 52000.00 |     10 | 2024-07-01  | raj@example.com   |
+|   107 | Pooja   | 68000.00 |     20 | 2023-09-15  | pooja@example.com |
+|   108 | Vijay   | 48000.00 |     30 | 2025-01-10  | vijay@example.com |
+|   109 | Anita   | 82000.00 |     40 | 2022-08-20  | anita@example.com |
+|   110 | Rohan   | 57000.00 |     10 | 2024-12-05  | rohan@example.com |
+|   111 | Sahil   | 62000.00 |     10 | 2025-06-01  | NULL              |
++-------+---------+----------+--------+-------------+-------------------+
+12 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Select * from Employee
+    -> Where Salary > 50000;
++-------+---------+----------+--------+-------------+-------------------+
+| Empid | EmpName | salary   | DeptId | Joiningdate | Email             |
++-------+---------+----------+--------+-------------+-------------------+
+|   101 | Amit    | 70000.00 |     10 | 2024-01-15  | NULL              |
+|   102 | Priya   | 75000.00 |     20 | 2023-06-10  | NULL              |
+|   104 | Neha    | 90000.00 |     30 | 2022-11-05  | NULL              |
+|   105 | Sneha   | 55000.00 |     20 | 2025-02-12  | NULL              |
+|   106 | Raj     | 52000.00 |     10 | 2024-07-01  | raj@example.com   |
+|   107 | Pooja   | 68000.00 |     20 | 2023-09-15  | pooja@example.com |
+|   109 | Anita   | 82000.00 |     40 | 2022-08-20  | anita@example.com |
+|   110 | Rohan   | 57000.00 |     10 | 2024-12-05  | rohan@example.com |
+|   111 | Sahil   | 62000.00 |     10 | 2025-06-01  | NULL              |
++-------+---------+----------+--------+-------------+-------------------+
+9 rows in set (0.02 sec)
+
+mysql> Select * from Department;
++--------+----------+--------+
+| Deptid | DeptName | city   |
++--------+----------+--------+
+|     10 | Sales    | Mumbai |
+|     20 | IT       | Pune   |
+|     30 | HR       | Nashik |
+|     40 | Finance  | Mumbai |
++--------+----------+--------+
+4 rows in set (0.00 sec)
+
+mysql> Update Employee
+    -> Set Salary = Salary * 1.10
+    -> Where Deptid = 10;
+Query OK, 5 rows affected (0.01 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> Select DeptId, Count(*) as Total_employees
+    -> From Emp
+    -> Group By deptid;
+ERROR 1146 (42S02): Table 'dcldb.emp' doesn't exist
+mysql> Select DeptId, Count(*) as Total_employees
+    -> From Employee
+    -> Group By deptid;
++--------+-----------------+
+| DeptId | Total_employees |
++--------+-----------------+
+|     10 |               5 |
+|     20 |               3 |
+|     30 |               2 |
+|     40 |               2 |
++--------+-----------------+
+4 rows in set (0.01 sec)
+
+mysql> Select d.DeptName, Count(e.EmpId) as Total_Employee
+    -> From Department d
+    -> Left Join Employee e ON d.DeptId = e.DeptId
+    -> Group By d.DeptId, d.DeptName;
++----------+----------------+
+| DeptName | Total_Employee |
++----------+----------------+
+| Sales    |              5 |
+| IT       |              3 |
+| HR       |              2 |
+| Finance  |              2 |
++----------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> Select d.DeptId, d.DeptName
+    -> From Department d
+    -> Left Join Employee e On d.Deptid = e.Deptid
+    -> where e.EmpId Is Null;
+Empty set (0.00 sec)
+
+mysql> Create View Mumbai_Salespeople As
+    -> Select e.Empid, e.EmpName, e.Salary,
+    -> d.deptName, d.City
+    -> From Employee e
+    -> Join Department d ON e.DeptId = d.DeptId
+    -> Where d.DeptName = 'Sales'
+    -> And d.city = 'Mumbai';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> Select * From Mumbai_SalesPeople;
++-------+---------+----------+----------+--------+
+| Empid | EmpName | Salary   | deptName | City   |
++-------+---------+----------+----------+--------+
+|   101 | Amit    | 77000.00 | Sales    | Mumbai |
+|   103 | Rahul   | 49500.00 | Sales    | Mumbai |
+|   106 | Raj     | 57200.00 | Sales    | Mumbai |
+|   110 | Rohan   | 62700.00 | Sales    | Mumbai |
+|   111 | Sahil   | 68200.00 | Sales    | Mumbai |
++-------+---------+----------+----------+--------+
+5 rows in set (0.00 sec)
+
+mysql> Select Max(Salary) As Second_highest_Salary
+    -> From Employee
+    -> Where Salary < (Select Max(Salary) From Employee);
++-----------------------+
+| Second_highest_Salary |
++-----------------------+
+|              82000.00 |
++-----------------------+
+1 row in set (0.01 sec)
+
+mysql> Select * From Employee Order By JoiningDate Desc;
++-------+---------+----------+--------+-------------+-------------------+
+| Empid | EmpName | salary   | DeptId | Joiningdate | Email             |
++-------+---------+----------+--------+-------------+-------------------+
+|   111 | Sahil   | 68200.00 |     10 | 2025-06-01  | NULL              |
+|     5 | Karan   | 50000.00 |     40 | 2025-05-01  | NULL              |
+|   105 | Sneha   | 55000.00 |     20 | 2025-02-12  | NULL              |
+|   108 | Vijay   | 48000.00 |     30 | 2025-01-10  | vijay@example.com |
+|   110 | Rohan   | 62700.00 |     10 | 2024-12-05  | rohan@example.com |
+|   106 | Raj     | 57200.00 |     10 | 2024-07-01  | raj@example.com   |
+|   103 | Rahul   | 49500.00 |     10 | 2024-03-20  | NULL              |
+|   101 | Amit    | 77000.00 |     10 | 2024-01-15  | NULL              |
+|   107 | Pooja   | 68000.00 |     20 | 2023-09-15  | pooja@example.com |
+|   102 | Priya   | 75000.00 |     20 | 2023-06-10  | NULL              |
+|   104 | Neha    | 90000.00 |     30 | 2022-11-05  | NULL              |
+|   109 | Anita   | 82000.00 |     40 | 2022-08-20  | anita@example.com |
++-------+---------+----------+--------+-------------+-------------------+
+12 rows in set (0.00 sec)
+
+mysql> Alter Table Department
+    -> Rename Column DeptName TO DepartmentName;
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> Desc Department;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| Deptid         | int         | NO   | PRI | NULL    |       |
+| DepartmentName | varchar(50) | NO   |     | NULL    |       |
+| city           | varchar(50) | YES  |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> Delete From Employee;
+Query OK, 12 rows affected (0.02 sec)
+
+mysql> Select * from Employee;
+Empty set (0.00 sec)
+
+mysql> Truncate table Employee;
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> Select * from Employee;
+Empty set (0.00 sec)
+
+mysql> Desc Employee;
++-------------+---------------+------+-----+---------+-------+
+| Field       | Type          | Null | Key | Default | Extra |
++-------------+---------------+------+-----+---------+-------+
+| Empid       | int           | NO   | PRI | NULL    |       |
+| EmpName     | varchar(50)   | NO   |     | NULL    |       |
+| salary      | decimal(10,2) | YES  |     | NULL    |       |
+| DeptId      | int           | YES  | MUL | NULL    |       |
+| Joiningdate | date          | YES  |     | NULL    |       |
+| Email       | varchar(100)  | YES  |     | NULL    |       |
++-------------+---------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql>
