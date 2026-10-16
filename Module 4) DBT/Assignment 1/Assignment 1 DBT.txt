@@ -1,0 +1,401 @@
+Microsoft Windows [Version 10.0.26200.9457]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Atharv More>mysql -u root -p
+Enter password: *********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 33
+Server version: 8.0.46 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> Create database Library;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> use Library;
+Database changed
+mysql> Create table Authors (author_id INT primary key, name varchar(150), country varchar(50));
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> Create table Books ( book_id INT PRIMARY KEY, title VARCHAR(150), author_id INT,  published_year YEAR, available_copies INT,  FOREIGN KEY (author_id) REFERENCES Authors(author_id));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> Create Table Members (member_id INT primary key, name varchar(100), email varchar(100) Unique, phone varchar(15));
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> Create Table Borrow_Records (record_id INT primary key, m mber_id INT, book_id INT, borrow_date Date, return_date Date, )
+    ->  FOREIGN KEY (member_id) REFERENCES Members(member_id), FOREIGN KEY (book_id) REFERENCES Books(book_id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')
+ FOREIGN KEY (member_id) REFERENCES Members(member_id), FOREIGN KEY (book_id) ' at line 1
+mysql> Create Table Borrow_Records (record_id INT primary key, m mber_id INT, book_id INT, borrow_date Date, return_date Date,  FOREIGN KEY (member_id) REFERENCES Members(member_id),  FOREIGN KEY (book_id) REFERENCES Books(book_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'mber_id INT, book_id INT, borrow_date Date, return_date Date,  FOREIGN KEY (memb' at line 1
+mysql> Create Table Borrow_Records (record_id INT primary key, member_id INT, book_id INT, borrow_date Date, return_date Date,  FOREIGN KEY (member_id) REFERENCES Members(member_id),  FOREIGN KEY (book_id) REFERENCES Books(book_id));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> desc Authors;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| author_id | int          | NO   | PRI | NULL    |       |
+| name      | varchar(150) | YES  |     | NULL    |       |
+| country   | varchar(50)  | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc Books;
++------------------+--------------+------+-----+---------+-------+
+| Field            | Type         | Null | Key | Default | Extra |
++------------------+--------------+------+-----+---------+-------+
+| book_id          | int          | NO   | PRI | NULL    |       |
+| title            | varchar(150) | YES  |     | NULL    |       |
+| author_id        | int          | YES  | MUL | NULL    |       |
+| published_year   | year         | YES  |     | NULL    |       |
+| available_copies | int          | YES  |     | NULL    |       |
++------------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc Member;
+ERROR 1146 (42S02): Table 'library.member' doesn't exist
+mysql> desc members;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| member_id | int          | NO   | PRI | NULL    |       |
+| name      | varchar(100) | YES  |     | NULL    |       |
+| email     | varchar(100) | YES  | UNI | NULL    |       |
+| phone     | varchar(15)  | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc Borrow_Records;
++-------------+------+------+-----+---------+-------+
+| Field       | Type | Null | Key | Default | Extra |
++-------------+------+------+-----+---------+-------+
+| record_id   | int  | NO   | PRI | NULL    |       |
+| member_id   | int  | YES  | MUL | NULL    |       |
+| book_id     | int  | YES  | MUL | NULL    |       |
+| borrow_date | date | YES  |     | NULL    |       |
+| return_date | date | YES  |     | NULL    |       |
++-------------+------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> Alter Table Books ADD genre Varchar(50);
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> Drop table Borrow_Records;
+Query OK, 0 rows affected (0.13 sec)
+
+mysql>  Create Table Borrow_Records (record_id INT primary key, member_id INT, book_id INT, borrow_date Date, return_date Date,  FOREIGN KEY (member_id) REFERENCES Members(member_id),  FOREIGN KEY (book_id) REFERENCES Books(book_id));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> Insert Into Authors Values (1, 'Sarthak', 'India'),(2, 'Chaitu', 'USA'),(3, 'Dipak', 'India');
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> Select * from Authors;
++-----------+---------+---------+
+| author_id | name    | country |
++-----------+---------+---------+
+|         1 | Sarthak | India   |
+|         2 | Chaitu  | USA     |
+|         3 | Dipak   | India   |
++-----------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> Insert Into Books (book_id, title, author_id, published_year, available_copies) Values (1, 'C++', 2, 2018, 5), (2, 'ADS', 3, 2008, 3), (3, 'Java', 1, 2016, 4),  (4, 'OOP', 2, 2004, 6), (5, 'Database', 1, 2025, 2);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> Select * from Books;
++---------+----------+-----------+----------------+------------------+-------+
+| book_id | title    | author_id | published_year | available_copies | genre |
++---------+----------+-----------+----------------+------------------+-------+
+|       1 | C++      |         2 |           2018 |                5 | NULL  |
+|       2 | ADS      |         3 |           2008 |                3 | NULL  |
+|       3 | Java     |         1 |           2016 |                4 | NULL  |
+|       4 | OOP      |         2 |           2004 |                6 | NULL  |
+|       5 | Database |         1 |           2025 |                2 | NULL  |
++---------+----------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> Insert Into Members Values (1, 'Atharv', 'atharv@gmail.com', '123456'),(2, 'Rahul', 'rahul@gmail.com', '678934'),(3,'Virat','virat@gmail.com', '532737');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Borrow_Records VALUES (1, 1, 1, '2026-10-01', NULL), (2, 2, 2, '2026-10-02', '2026-10-06'), (3, 3, 1, '2026-10-03', NULL), (4, 1, 3, '2026-10-04', NULL);
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> Select * From Author;
+ERROR 1146 (42S02): Table 'library.author' doesn't exist
+mysql> Select * From Authors;
++-----------+---------+---------+
+| author_id | name    | country |
++-----------+---------+---------+
+|         1 | Sarthak | India   |
+|         2 | Chaitu  | USA     |
+|         3 | Dipak   | India   |
++-----------+---------+---------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Books;
++---------+----------+-----------+----------------+------------------+-------+
+| book_id | title    | author_id | published_year | available_copies | genre |
++---------+----------+-----------+----------------+------------------+-------+
+|       1 | C++      |         2 |           2018 |                5 | NULL  |
+|       2 | ADS      |         3 |           2008 |                3 | NULL  |
+|       3 | Java     |         1 |           2016 |                4 | NULL  |
+|       4 | OOP      |         2 |           2004 |                6 | NULL  |
+|       5 | Database |         1 |           2025 |                2 | NULL  |
++---------+----------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Members;
++-----------+--------+------------------+--------+
+| member_id | name   | email            | phone  |
++-----------+--------+------------------+--------+
+|         1 | Atharv | atharv@gmail.com | 123456 |
+|         2 | Rahul  | rahul@gmail.com  | 678934 |
+|         3 | Virat  | virat@gmail.com  | 532737 |
++-----------+--------+------------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Borrow_Records;
++-----------+-----------+---------+-------------+-------------+
+| record_id | member_id | book_id | borrow_date | return_date |
++-----------+-----------+---------+-------------+-------------+
+|         1 |         1 |       1 | 2026-10-01  | NULL        |
+|         2 |         2 |       2 | 2026-10-02  | 2026-10-06  |
+|         3 |         3 |       1 | 2026-10-03  | NULL        |
+|         4 |         1 |       3 | 2026-10-04  | NULL        |
++-----------+-----------+---------+-------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> Select * From Books WHERE published_Year > 2015;
++---------+----------+-----------+----------------+------------------+-------+
+| book_id | title    | author_id | published_year | available_copies | genre |
++---------+----------+-----------+----------------+------------------+-------+
+|       1 | C++      |         2 |           2018 |                5 | NULL  |
+|       3 | Java     |         1 |           2016 |                4 | NULL  |
+|       5 | Database |         1 |           2025 |                2 | NULL  |
++---------+----------+-----------+----------------+------------------+-------+
+3 rows in set (0.01 sec)
+
+mysql> 
+
+----------
+
+mysql> Use Library;
+Database changed
+mysql> Show Tables;
++-------------------+
+| Tables_in_library |
++-------------------+
+| authors           |
+| books             |
+| borrow_records    |
+| members           |
++-------------------+
+4 rows in set (0.00 sec)
+
+mysql> Select Distinct m.member_id, m.name, m.email
+    -> From Members m
+    -> Join Borrow_Record br
+    -> ON m.member_id = br.member_id
+    -> Join Books b
+    -> ON br.book_id = b.book_id
+    -> Where b.title = 'Database';
+ERROR 1146 (42S02): Table 'library.borrow_record' doesn't exist
+mysql> SELECT DISTINCT m.member_id, m.name, m.email
+    -> FROM Members m
+    -> JOIN Borrow_Records br
+    ->     ON m.member_id = br.member_id
+    -> JOIN Books b
+    ->     ON br.book_id = b.book_id
+    -> WHERE b.title = 'Database';
+Empty set (0.00 sec)
+
+mysql> UPDATE Books
+    -> SET title = 'Database Systems'
+    -> WHERE book_id = 5;
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT DISTINCT m.member_id, m.name, m.email
+    -> FROM Members m
+    -> JOIN Borrow_Records br
+    ->     ON m.member_id = br.member_id
+    -> JOIN Books b
+    ->     ON br.book_id = b.book_id
+    -> WHERE b.title = 'Database Systems';
+Empty set (0.00 sec)
+
+mysql> SELECT * FROM Borrow_Records;
++-----------+-----------+---------+-------------+-------------+
+| record_id | member_id | book_id | borrow_date | return_date |
++-----------+-----------+---------+-------------+-------------+
+|         1 |         1 |       1 | 2026-10-01  | NULL        |
+|         2 |         2 |       2 | 2026-10-02  | 2026-10-06  |
+|         3 |         3 |       1 | 2026-10-03  | NULL        |
+|         4 |         1 |       3 | 2026-10-04  | NULL        |
++-----------+-----------+---------+-------------+-------------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO Borrow_Records
+    -> VALUES (5, 1, 5, '2026-10-13', NULL);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Books
+    -> WHERE title = 'Database Systems';
++---------+------------------+-----------+----------------+------------------+-------+
+| book_id | title            | author_id | published_year | available_copies | genre |
++---------+------------------+-----------+----------------+------------------+-------+
+|       5 | Database Systems |         1 |           2025 |                2 | NULL  |
++---------+------------------+-----------+----------------+------------------+-------+
+1 row in set (0.00 sec)
+
+mysql>  SELECT * FROM Borrow_Records;
++-----------+-----------+---------+-------------+-------------+
+| record_id | member_id | book_id | borrow_date | return_date |
++-----------+-----------+---------+-------------+-------------+
+|         1 |         1 |       1 | 2026-10-01  | NULL        |
+|         2 |         2 |       2 | 2026-10-02  | 2026-10-06  |
+|         3 |         3 |       1 | 2026-10-03  | NULL        |
+|         4 |         1 |       3 | 2026-10-04  | NULL        |
+|         5 |         1 |       5 | 2026-10-13  | NULL        |
++-----------+-----------+---------+-------------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT DISTINCT m.member_id, m.name, m.email
+    -> FROM Members m
+    -> JOIN Borrow_Records br
+    ->     ON m.member_id = br.member_id
+    -> JOIN Books b
+    ->     ON br.book_id = b.book_id
+    -> WHERE b.title = 'Database Systems';
++-----------+--------+------------------+
+| member_id | name   | email            |
++-----------+--------+------------------+
+|         1 | Atharv | atharv@gmail.com |
++-----------+--------+------------------+
+1 row in set (0.00 sec)
+
+mysql> Update Books
+    -> SET avilable_copies = avilable_copies - 1
+    -> Where books_id = 1;
+ERROR 1054 (42S22): Unknown column 'books_id' in 'where clause'
+mysql> Update Books
+    -> SET avilable_copies = avilable_copies - 1
+    -> Where book_id = 1;
+ERROR 1054 (42S22): Unknown column 'avilable_copies' in 'field list'
+mysql> SET available_copies = available_copies - 1
+    -> Where book_id = 1;
+ERROR 1193 (HY000): Unknown system variable 'available_copies'
+mysql> Update Books
+    -> SET available_copies = available_copies - 1
+    -> Where book_id = 1;
+Query OK, 1 row affected (0.22 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT book_id, title, available_copies
+    -> FROM Books
+    -> WHERE book_id = 1;
++---------+-------+------------------+
+| book_id | title | available_copies |
++---------+-------+------------------+
+|       1 | C++   |                4 |
++---------+-------+------------------+
+1 row in set (0.00 sec)
+
+mysql> Delete From Borrow_Records
+    -> WHERE member_id = 3;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> DELETE FROM Members
+    -> WHERE member_id = 3;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Members;
++-----------+--------+------------------+--------+
+| member_id | name   | email            | phone  |
++-----------+--------+------------------+--------+
+|         1 | Atharv | atharv@gmail.com | 123456 |
+|         2 | Rahul  | rahul@gmail.com  | 678934 |
++-----------+--------+------------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> Update Books
+    -> SET title = 'C++ Programming'
+    -> Where books_id = 1;
+ERROR 1054 (42S22): Unknown column 'books_id' in 'where clause'
+mysql> Update Books
+    -> SET title = 'C++ Programming'
+    -> Where book_id = 1;
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Books
+    -> WHERE book_id = 1;
++---------+-----------------+-----------+----------------+------------------+-------+
+| book_id | title           | author_id | published_year | available_copies | genre |
++---------+-----------------+-----------+----------------+------------------+-------+
+|       1 | C++ Programming |         2 |           2018 |                4 | NULL  |
++---------+-----------------+-----------+----------------+------------------+-------+
+1 row in set (0.00 sec)
+
+mysql> SELECT b.book_id, b.title, a.name AS author_name
+    -> FROM Books b
+    -> JOIN Authors a
+    ->     ON b.author_id = a.author_id;
++---------+------------------+-------------+
+| book_id | title            | author_name |
++---------+------------------+-------------+
+|       3 | Java             | Sarthak     |
+|       5 | Database Systems | Sarthak     |
+|       1 | C++ Programming  | Chaitu      |
+|       4 | OOP              | Chaitu      |
+|       2 | ADS              | Dipak       |
++---------+------------------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> Delete From Books
+    -> Where published_year < 2000;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Select * from books;
++---------+------------------+-----------+----------------+------------------+-------+
+| book_id | title            | author_id | published_year | available_copies | genre |
++---------+------------------+-----------+----------------+------------------+-------+
+|       1 | C++ Programming  |         2 |           2018 |                4 | NULL  |
+|       2 | ADS              |         3 |           2008 |                3 | NULL  |
+|       3 | Java             |         1 |           2016 |                4 | NULL  |
+|       4 | OOP              |         2 |           2004 |                6 | NULL  |
+|       5 | Database Systems |         1 |           2025 |                2 | NULL  |
++---------+------------------+-----------+----------------+------------------+-------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT b.book_id, b.title
+    -> FROM Books b
+    -> LEFT JOIN Borrow_Records br
+    ->     ON b.book_id = br.book_id
+    -> WHERE br.book_id IS NULL;
++---------+-------+
+| book_id | title |
++---------+-------+
+|       4 | OOP   |
++---------+-------+
+1 row in set (0.00 sec)
+
+mysql> Drop tables Borrow_Records;
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> desc Borrow_Records;
+ERROR 1146 (42S02): Table 'library.borrow_records' doesn't exist
+mysql>
