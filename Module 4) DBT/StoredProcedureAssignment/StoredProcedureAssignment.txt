@@ -1,0 +1,504 @@
+Microsoft Windows [Version 10.0.26200.9711]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Atharv More>mysql -u root -p
+Enter password: *********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 8.0.46 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| college            |
+| information_schema |
+| library            |
+| mysql              |
+| new                |
+| oct13              |
+| performance_schema |
+| relational_demo    |
+| sakila             |
+| storedproceduredb  |
+| stp                |
+| sys                |
+| world              |
+| xyz_company        |
++--------------------+
+14 rows in set (0.01 sec)
+
+mysql> use  storedproceduredb;
+Database changed
+mysql> CALL check_even_odd(25);
++--------+
+| result |
++--------+
+| odd    |
++--------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> DROP PROCEDURE check_even_odd;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE check_even_odd(IN num INT)
+    -> BEGIN
+    ->     IF MOD(num, 2) = 0 THEN
+    ->         SELECT 'even' AS result;
+    ->     ELSE
+    ->         SELECT 'odd' AS result;
+    ->     END IF;
+    -> END //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL check_even_odd(25);
++--------+
+| result |
++--------+
+| odd    |
++--------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL check_even_odd(40);
++--------+
+| result |
++--------+
+| even   |
++--------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Delimiter //
+mysql> Create Procedure calculate_interest (
+    -> IN p_principal Decimal(10,2),
+    -> IN p_rate Decimal(5,2),
+    -> IN p_time INT
+    -> )
+    -> Begin
+    -> Declare interest Decimal(10,2);
+    -> Set interest = (p_principal * p_rate * p_time) / 100;
+    -> Select p_principal As principal,
+    -> p_rate As rate,
+    -> p_time As time_years,
+    -> interest As simple_interest;
+    -> End //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Dlimiter ;
+    -> CALL calculate_interest(10000, 5, 2);
+    -> Delimiter ;
+    -> \c
+mysql> Delimiter ;
+mysql> CALL calculate_interest(10000, 5, 2);
++-----------+------+------------+-----------------+
+| principal | rate | time_years | simple_interest |
++-----------+------+------------+-----------------+
+|  10000.00 | 5.00 |          2 |         1000.00 |
++-----------+------+------------+-----------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CALL calculate_interest(25000, 7, 3);
++-----------+------+------------+-----------------+
+| principal | rate | time_years | simple_interest |
++-----------+------+------------+-----------------+
+|  25000.00 | 7.00 |          3 |         5250.00 |
++-----------+------+------------+-----------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Create Procedure calculate_grade (
+    -> IN s_id INT,
+    -> IN s_name varchar(50),
+    -> IN marks INT
+    -> )
+    -> Begin
+    -> Declare grade varchar(2);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 7
+mysql> CALL calculate_interest(25000, 7, 3);^C
+mysql> Delimiter //
+mysql> Create Procedure calaculate_grade ()
+    -> \c
+mysql> Delimiter //
+mysql> Create Procedure calculate_grade (
+    -> IN s_id INT,
+    -> IN s_name varchar(50),
+    -> IN marks INT
+    -> )
+    -> Begin
+    -> Declare grade varchar(2);
+    -> If marks >= 90 AND marks <= 100 THEN
+    -> Set grade = 'A+';
+    -> Elseif marks >= 80 Then
+    -> set grade = 'A';
+    -> Elseif marks >= 70 then
+    -> set grade = 'B';
+    -> Elseif marks >= 60 then
+    -> set grade = 'C';
+    -> Elseif marks >= 50 then
+    -> set grade = 'D';
+    -> Else
+    -> Set grade = 'F';
+    -> End If;
+    -> Select s_id As student_id,
+    -> s_name As student_name,
+    -> marks, grade;
+    -> End //
+Query OK, 0 rows affected (0.23 sec)
+
+mysql> Delimiter ;
+mysql> CALL calculate_grade(101, 'Amit', 85);
++------------+--------------+-------+-------+
+| student_id | student_name | marks | grade |
++------------+--------------+-------+-------+
+|        101 | Amit         |    85 | A     |
++------------+--------------+-------+-------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CALL calculate_grade(102, 'Priya', 72);
++------------+--------------+-------+-------+
+| student_id | student_name | marks | grade |
++------------+--------------+-------+-------+
+|        102 | Priya        |    72 | B     |
++------------+--------------+-------+-------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CALL calculate_grade(103, 'Rahul', 45);
++------------+--------------+-------+-------+
+| student_id | student_name | marks | grade |
++------------+--------------+-------+-------+
+|        103 | Rahul        |    45 | F     |
++------------+--------------+-------+-------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter //
+mysql> Create Procedure calculate_bonus(In emp_name varchar(50), In salary Decimal(10,2))
+    -> begin
+    -> Declare bonus_percentage Decimal(5,2);
+    -> Declare bonus_amount Decimal(5,2);
+    -> If salary >= 100000 Then
+    -> Set bonus_percentage = 20;
+    -> If salary >= 50000 Then
+    -> Set bonus_percentage = 15;
+    -> If salary >= 30000 Then
+    -> Set bonus_percentage = 10;
+    -> Else
+    -> Set bonus_percentage = 5;
+    -> End IF;
+    -> Set bonus_amount = salary * bonus_percentage/100;
+    -> Select emp_name As employee_name, salary,
+    -> bonus_percentage, bonus_amount,
+    -> salary +  bonus_amount As total_salary;
+    -> End //
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 18
+mysql> \c
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE calculate_bonus(
+    ->     IN emp_name VARCHAR(50),
+    ->     IN salary DECIMAL(10,2)
+    -> )
+    -> BEGIN
+    ->     DECLARE bonus_percentage DECIMAL(5,2);
+    ->     DECLARE bonus_amount DECIMAL(10,2);
+    ->
+    ->     IF salary >= 100000 THEN
+    ->         SET bonus_percentage = 20;
+    ->     ELSEIF salary >= 50000 THEN
+    ->         SET bonus_percentage = 15;
+    ->     ELSEIF salary >= 30000 THEN
+    ->         SET bonus_percentage = 10;
+    ->     ELSE
+    ->         SET bonus_percentage = 5;
+    ->     END IF;
+    ->
+    ->     SET bonus_amount = salary * bonus_percentage / 100;
+    ->
+    ->     SELECT emp_name AS employee_name,
+    ->            salary,
+    ->            bonus_percentage,
+    ->            bonus_amount,
+    ->            salary + bonus_amount AS total_salary;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL calculate_bonus('Amit', 120000);
++---------------+-----------+------------------+--------------+--------------+
+| employee_name | salary    | bonus_percentage | bonus_amount | total_salary |
++---------------+-----------+------------------+--------------+--------------+
+| Amit          | 120000.00 |            20.00 |     24000.00 |    144000.00 |
++---------------+-----------+------------------+--------------+--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CALL calculate_bonus('Priya', 65000);
++---------------+----------+------------------+--------------+--------------+
+| employee_name | salary   | bonus_percentage | bonus_amount | total_salary |
++---------------+----------+------------------+--------------+--------------+
+| Priya         | 65000.00 |            15.00 |      9750.00 |     74750.00 |
++---------------+----------+------------------+--------------+--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CALL calculate_bonus('Rahul', 25000);
++---------------+----------+------------------+--------------+--------------+
+| employee_name | salary   | bonus_percentage | bonus_amount | total_salary |
++---------------+----------+------------------+--------------+--------------+
+| Rahul         | 25000.00 |             5.00 |      1250.00 |     26250.00 |
++---------------+----------+------------------+--------------+--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> Delimiter //
+mysql> Create procedure find_maximum(IN a INT, IN b INT, IN c INT)
+    -> Begin
+    -> IF a >= b AND a >= c Then
+    -> Select a as maximum;
+    -> IF b >= a AND b >= c Then
+    -> Select b as maximum;
+    -> \c
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE find_maximum(
+    ->     IN a INT,
+    ->     IN b INT,
+    ->     IN c INT
+    -> )
+    -> BEGIN
+    ->     IF a >= b AND a >= c THEN
+    ->         SELECT a AS maximum;
+    ->     ELSEIF b >= a AND b >= c THEN
+    ->         SELECT b AS maximum;
+    ->     ELSE
+    ->         SELECT c AS maximum;
+    ->     END IF;
+    -> END //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> Call find_maximin(25, 78, 45);
+ERROR 1305 (42000): PROCEDURE storedproceduredb.find_maximin does not exist
+mysql> Call find_maximun(25, 78, 45);
+ERROR 1305 (42000): PROCEDURE storedproceduredb.find_maximun does not exist
+mysql> CALL find_maximum(25, 78, 45);
++---------+
+| maximum |
++---------+
+|      78 |
++---------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Call find_maximum(100, 50, 75);
++---------+
+| maximum |
++---------+
+|     100 |
++---------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Call find_maximum(30, 30, 20);
++---------+
+| maximum |
++---------+
+|      30 |
++---------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> Delimiter //
+mysql> Create Procedure salary_analysis(IN emp_name varchar(30), IN salary Int)
+    -> Begin
+    -> declare category varchar(10);
+    -> declare allowance_percentage decimal(5,2);
+    -> declare allowance_amount decimal(10,2);
+    -> If salary >= 100000 Then
+    -> Set category = 'High';
+    -> Set allowance_percentage = 20;
+    -> ElseIf salary >= 50000 Then
+    -> Set category = 'Medium';
+    -> Set allowance_percentage = 15;
+    -> Else
+    -> Set category = 'Low';
+    -> Set allowance_percentage = 10;
+    -> End If;
+    -> Set allowance_amount = salary * allowance_percentage / 100;
+    -> Select emp_name,salary,category, allowance_percentage, allowance_amount, salary + allowance_amt AS final_salary;
+    -> End //
+Query OK, 0 rows affected (0.23 sec)
+
+mysql> Delimiter ;
+mysql> CALL salary_analysis('Amit', 120000);
+ERROR 1054 (42S22): Unknown column 'allowance_amt' in 'field list'
+mysql> DROP PROCEDURE salary_analysis;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE salary_analysis(
+    ->     IN emp_name VARCHAR(30),
+    ->     IN salary INT
+    -> )
+    -> BEGIN
+    ->     DECLARE category VARCHAR(10);
+    ->     DECLARE allowance_percentage DECIMAL(5,2);
+    ->     DECLARE allowance_amount DECIMAL(10,2);
+    ->
+    ->     IF salary >= 100000 THEN
+    ->         SET category = 'High';
+    ->         SET allowance_percentage = 20;
+    ->     ELSEIF salary >= 50000 THEN
+    ->         SET category = 'Medium';
+    ->         SET allowance_percentage = 15;
+    ->     ELSE
+    ->         SET category = 'Low';
+    ->         SET allowance_percentage = 10;
+    ->     END IF;
+    ->
+    ->     SET allowance_amount = salary * allowance_percentage / 100;
+    ->
+    ->     SELECT emp_name, salary, category,
+    ->            allowance_percentage, allowance_amount,
+    ->            salary + allowance_amount AS final_salary;
+    -> END //
+Query OK, 0 rows affected (0.23 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL salary_analysis('Amit', 120000);
++----------+--------+----------+----------------------+------------------+--------------+
+| emp_name | salary | category | allowance_percentage | allowance_amount | final_salary |
++----------+--------+----------+----------------------+------------------+--------------+
+| Amit     | 120000 | High     |                20.00 |         24000.00 |    144000.00 |
++----------+--------+----------+----------------------+------------------+--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CALL salary_analysis('Priya', 60000);
++----------+--------+----------+----------------------+------------------+--------------+
+| emp_name | salary | category | allowance_percentage | allowance_amount | final_salary |
++----------+--------+----------+----------------------+------------------+--------------+
+| Priya    |  60000 | Medium   |                15.00 |          9000.00 |     69000.00 |
++----------+--------+----------+----------------------+------------------+--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL salary_analysis('Rahul', 35000);
++----------+--------+----------+----------------------+------------------+--------------+
+| emp_name | salary | category | allowance_percentage | allowance_amount | final_salary |
++----------+--------+----------+----------------------+------------------+--------------+
+| Rahul    |  35000 | Low      |                10.00 |          3500.00 |     38500.00 |
++----------+--------+----------+----------------------+------------------+--------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
+mysql> DELIMITER //
+mysql>
+mysql> CREATE PROCEDURE calculate_electricity_bill(
+    ->     IN consumer_name VARCHAR(50),
+    ->     IN units INT
+    -> )
+    -> BEGIN
+    ->     DECLARE bill DECIMAL(10,2);
+    ->
+    ->     IF units <= 100 THEN
+    ->         SET bill = units * 2;
+    ->
+    ->     ELSEIF units <= 200 THEN
+    ->         SET bill = (100 * 2) + ((units - 100) * 3);
+    ->
+    ->     ELSEIF units <= 400 THEN
+    ->         SET bill = (100 * 2) + (100 * 3)
+    ->                    + ((units - 200) * 5);
+    ->
+    ->     ELSE
+    ->         SET bill = (100 * 2) + (100 * 3)
+    ->                    + (200 * 5) + ((units - 400) * 7);
+    ->     END IF;
+    ->
+    ->     SELECT consumer_name, units, bill AS total_bill;
+    -> END //
+Query OK, 0 rows affected (0.04 sec)
+
+mysql>
+mysql> DELIMITER ;
+mysql> CALL calculate_electricity_bill('Amit', 80);
++---------------+-------+------------+
+| consumer_name | units | total_bill |
++---------------+-------+------------+
+| Amit          |    80 |     160.00 |
++---------------+-------+------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL calculate_electricity_bill('Priya', 150);
++---------------+-------+------------+
+| consumer_name | units | total_bill |
++---------------+-------+------------+
+| Priya         |   150 |     350.00 |
++---------------+-------+------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL calculate_electricity_bill('Rahul', 350);
++---------------+-------+------------+
+| consumer_name | units | total_bill |
++---------------+-------+------------+
+| Rahul         |   350 |    1250.00 |
++---------------+-------+------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL calculate_electricity_bill('Neha', 500);
++---------------+-------+------------+
+| consumer_name | units | total_bill |
++---------------+-------+------------+
+| Neha          |   500 |    2200.00 |
++---------------+-------+------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
